@@ -8,7 +8,7 @@ int main() {
 	cin >> fc >> vc >> sc;
 
 	if (vc < sc) {
-		int amount = round(fc / (sc - vc) + 1);
+		int amount = (fc / (sc - vc) + 1);
 		cout << amount;
 	}
 	else if (vc == sc || vc > sc) {
