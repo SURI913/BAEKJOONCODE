@@ -1,67 +1,55 @@
-#include<iostream>
-#include<string>
-#include<vector>
-
+#include <iostream>
+#include <string>
+#include <vector>
 using namespace std;
 
-vector<char> operators;
-vector<int> num;
-vector<int> sumNums;
-int minusCount = 0;
+vector<char> ops;
+vector<int> nums;
 int result;
 
-void Greedy() {
-	//최소값 찾기: 모두 더해서 빼는 방식
-	int sum = num[0];
-	for (int i = 0; i < operators.size(); i++) {
-		//+면 값을 먼저 다 더해줌
-		if (operators[i] == '+') {
-			sum += num[i + 1];
-		}
-		else if (operators[i] == '-') {
-			//-일때는 더한 값 저장하고 마지막에 다 빼주는걸로
-			sumNums.push_back(sum);
-			sum = num[i + 1];
-			minusCount++;
-			//cout << sumNums.back() << '-';
-		}
-	}
-	sumNums.push_back(sum);
-	//cout << sumNums.back() << '\n';
+int Greedy() {
+    vector<int> groupSums;
 
-	result = sumNums[0];
-	for (int i = 0; i < minusCount; i++) {
-		result -= sumNums[i + 1];
-	}
-}
+    int sum = nums[0];
+    for (int i = 0; i < (int)ops.size(); i++) {
+        if (ops[i] == '+') {
+            sum += nums[i + 1];
+        }
+        else { // '-'
+            groupSums.push_back(sum);
+            sum = nums[i + 1];
+        }
+    }
+    groupSums.push_back(sum);
 
-void Print() {
-	cout << result << '\n';
+    int result = groupSums[0];
+    for (int i = 1; i < (int)groupSums.size(); i++) {
+        result -= groupSums[i];
+    }
+    return result;
 }
 
 int main() {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-	cout.tie(NULL);
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-	string input, numLine;
-	cin >> input;
-	//입력받은 식 처리
-	for (int i = 0; i <= input.size(); i++) {
-		if (input[i] == '-' || input[i] == '+') {
-			operators.push_back(input[i]);
-			if (!numLine.empty()) {
-				num.push_back(stoi(numLine));
-				numLine.clear();
-			}
-			continue;
-		}
-		numLine += input[i];
-	}
-	num.push_back(stoi(numLine));
+    string input;
+    cin >> input;
 
-	Greedy();
-	Print();
+    string buf;
+    for (int i = 0; i < (int)input.size(); i++) {
+        char c = input[i];
+        if (c == '+' || c == '-') {
+            ops.push_back(c);
+            nums.push_back(stoi(buf));
+            buf.clear();
+        }
+        else {
+            buf += c;
+        }
+    }
+    nums.push_back(stoi(buf));
 
-	return 0;
+    cout << Greedy() << '\n';
+    return 0;
 }
